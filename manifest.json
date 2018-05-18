@@ -1,0 +1,28 @@
+{
+    "name": "Smash Bookmark",
+    "version": "1.0",
+    "description": "Bookmark smash.gg events for future use",
+    "background": {
+        "scripts": ["background.js"],
+        "persistent": false
+    },
+    "browser_action": {
+        "default_icon": "icon.png",
+        "default_popup": "popup.html"
+    },
+    "content_scripts": [
+        {
+            "matches": ["https://blog.lateral.io/*", "http://smash.gg/tournament/*"],
+            "js": ["js/content.js"],
+            "run_at": "document_end"
+        }
+    ],
+    "permissions":[
+        "contextMenus", 
+        "tabs",
+        "http://*/*",
+        "https://*/*",
+        "activeTab"
+    ],
+    "manifest_version": 2
+}

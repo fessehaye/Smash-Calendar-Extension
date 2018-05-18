@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html style="width:400px">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hello Bulma!</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/balloon-css/0.5.0/balloon.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="js/fontawesome.js"></script>
+  </head>
+  <body class="has-navbar-fixed-top">
+    <nav class="navbar is-fixed-top has-background-danger" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+            <a class="navbar-item has-text-white has-text-weight-semibold">
+                Smash Mini Calendar
+            </a>
+
+            <a role="button" class="navbar-burger has-text-white" aria-label="menu" aria-expanded="false">
+              <span aria-hidden="true"></span>
+              <span aria-hidden="true"></span>
+              <span aria-hidden="true"></span>
+            </a>
+        </div>
+
+        <div class="navbar-menu" id="navMenu">
+          <!-- shown on mobile -->
+          <a class="navbar-item">
+            Add Tab
+          </a>
+          <a class="navbar-item">
+            Edit Tab Names
+          </a>
+          <a class="navbar-item">
+            Import Event
+          </a>
+        </div>
+        
+    </nav>
+    <section>
+      <div class="container ">
+        <div class="tabs is-centered is-small is-boxed">
+          <ul>
+            <li class="is-active">
+              <a>
+                <span>Upcoming Events</span>
+              </a>
+            </li>
+            <li>
+              <a>
+                <span>Past Events</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+        <article class="media event">
+          <figure class="media-left">
+            <p class="image is-64x64 event-logo">
+              <img src="https://smashgg.imgix.net/images/tournament/33152/image-7edc5687f26641540b5b290773a6a16f.png?auto=compress,format&w=280&h=280&fit=crop">
+            </p>
+          </figure>
+          <div class="media-content">
+            <div class="content">
+              <p>
+                <strong>Smash and Splash 4</strong>
+                <br/>
+                <span>June 24th-26th</span> 
+              </p>
+              
+            </div>
+          </div>
+          <div class="media-right">
+              <span class="icon has-text-info" data-balloon="Copy Event Link" data-balloon-pos="left">
+                <i class="fas fa-paste"></i>
+              </span>
+              <span class="icon has-text-danger" data-balloon="Delete Event" data-balloon-pos="left">
+                <i class="fas fa-trash-alt"></i>
+              </span>
+          </div>
+        </article>
+        <article class="media event">
+          <figure class="media-left">
+            <p class="image is-64x64">
+              <img src="https://smashgg.imgix.net/images/tournament/33152/image-7edc5687f26641540b5b290773a6a16f.png?auto=compress,format&w=280&h=280&fit=crop">
+            </p>
+          </figure>
+          <div class="media-content">
+            <div class="content">
+              <p>
+                <strong>EVO 2018</strong>
+                <br/>
+                <span>August 24th-26th</span>
+                <br/>
+                <span>Las Vegas,Nevada</span> 
+              </p>
+              
+            </div>
+          </div>
+          <div class="media-right">
+              <span class="icon has-text-info" data-balloon="Copy Event Link" data-balloon-pos="left">
+                <i class="fas fa-paste"></i>
+              </span>
+              <span class="icon has-text-danger" data-balloon="Delete Event" data-balloon-pos="left">
+                <i class="fas fa-trash-alt"></i>
+              </span>
+          </div>
+        </article>
+        
+      </div>
+    </section>
+  </body>
+  <script src="js/pouchdb-6.4.3.min.js"></script>
+  <script src="js/vue.js"></script>
+  <script src="popup.js"></script>
+  <script src="js/navbar.js"></script>
+</html>
