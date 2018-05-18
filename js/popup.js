@@ -69,8 +69,8 @@ var app = new Vue({
                 name: tourney.name,
                 startAt: tourney.startAt * 1000,
                 endAt: tourney.endAt * 1000,
-                city: tourney.city,
-                state: tourney.addrState,
+                city: tourney.city || "",
+                state: tourney.addrState || "",
                 logo: logo.url,
                 slug: tourney.slug,
                 registrationClosesAt: tourney.registrationClosesAt
@@ -78,7 +78,7 @@ var app = new Vue({
             // db.put(doc);
             
             self.events.push(doc);
-            self.events = self.events.sort((a, b) => a.startAt > b.startAt );
+            self.events = self.events.sort((a, b) => b.startAt > a.startAt );
             self.addModal = false;
             document.getElementById('navMenu').classList.remove('is-active');
             document.querySelectorAll('.navbar-burger')[0].classList.remove('is-active');
