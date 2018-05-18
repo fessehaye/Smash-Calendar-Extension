@@ -33,6 +33,11 @@
           </footer>
         </div>
       </div>
+      <a class="button add-icon is-link" data-balloon="Add Event" data-balloon-pos="left" @click="toggleAddModal()"> 
+        <span class="icon is-large">
+          <i class="fas fa-plus"></i>
+        </span>
+      </a>
       <nav class="navbar is-fixed-top has-background-danger" role="navigation" aria-label="main navigation">
           <div class="navbar-brand">
               <a class="navbar-item has-text-white has-text-weight-semibold">
@@ -48,14 +53,17 @@
 
           <div class="navbar-menu" id="navMenu">
             <!-- shown on mobile -->
-            <a class="navbar-item" >
+            <!-- <a class="navbar-item" >
               Add Tab
             </a>
             <a class="navbar-item">
               Edit Tab Names
-            </a>
-            <a class="navbar-item" @click="toggleAddModal()">
-              Import Event
+            </a> -->
+            <a class="navbar-item" @click="github">
+              <span class="icon">
+                <i class="fab fa-github"></i>
+              </span>
+              <span>GitHub</span>
             </a>
           </div>
 
@@ -64,24 +72,25 @@
         <div class="container ">
           <div class="tabs is-centered is-small is-boxed">
             <ul>
-              <li class="is-active">
-                <a>
-                  <span>All Events</span>
-                </a>
-              </li>
-              <li>
-                <a>
+              <li v-bind:class="{ 'is-active': tabs.upcomingEvents }">
+                <a @click="changeTab('upcomingEvents')">
                   <span>Upcoming Events</span>
                 </a>
               </li>
-              <li>
-                <a>
+              <li v-bind:class="{ 'is-active': tabs.allEvents }">
+                <a @click="changeTab('allEvents')">
+                  <span>All Events</span>
+                </a>
+              </li>
+              <li v-bind:class="{ 'is-active': tabs.prevEvents }">
+                <a @click="changeTab('prevEvents')">
                   <span>Past Events</span>
                 </a>
               </li>
             </ul>
           </div>
-          <article class="media event" v-for="(event, index) in events">
+       
+          <article class="media event" v-for="(event, index) in filteredEvents()">
             <figure class="media-left">
               <p class="image is-64x64 event-logo">
                 <img v-bind:src="event.logo">
@@ -108,7 +117,7 @@
                 </span>
             </div>
           </article>
-          <div class="no-events" v-show="events.length == 0">
+          <div class="no-events" v-show="filteredEvents().length == 0">
             <p>No events available yet! Get started by adding events.</p>
             <br/>
             <a class="button is-link is-outlined" @click="toggleAddModal()">Add Events</a>
@@ -119,7 +128,7 @@
   </body>
   <script src="js/moment.js"></script>
   <script src="js/axios.js"></script>
-  <script src="js/pouchdb-6.4.3.min.js"></script>
+  <script src="js/lokijs.min.js"></script>
   <script src="js/vue.js"></script>
   <script src="js/popup.js"></script>
   <script src="js/navbar.js"></script>

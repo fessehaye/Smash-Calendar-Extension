@@ -39,3 +39,17 @@ a.navbar-item {
     align-items: center;
     flex-direction: column;
 }
+
+.add-icon {
+    position: absolute;
+    opacity: 0.3;
+    bottom: 43px;
+    right: 33px;
+    transition: 0.4s ease-in-out all;
+    padding: 24px 20px;
+    border-radius: 100%;
+}
+
+.add-icon:hover {
+    opacity: 1;
+}
