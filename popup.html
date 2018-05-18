@@ -48,13 +48,13 @@
 
           <div class="navbar-menu" id="navMenu">
             <!-- shown on mobile -->
-            <a class="navbar-item" @click="toggleAddModal()">
-              Add Event
+            <a class="navbar-item" >
+              Add Tab
             </a>
             <a class="navbar-item">
               Edit Tab Names
             </a>
-            <a class="navbar-item">
+            <a class="navbar-item" @click="toggleAddModal()">
               Import Event
             </a>
           </div>
@@ -66,6 +66,11 @@
             <ul>
               <li class="is-active">
                 <a>
+                  <span>All Events</span>
+                </a>
+              </li>
+              <li>
+                <a>
                   <span>Upcoming Events</span>
                 </a>
               </li>
@@ -76,10 +81,10 @@
               </li>
             </ul>
           </div>
-          <article class="media event" v-for="event in events">
+          <article class="media event" v-for="(event, index) in events">
             <figure class="media-left">
               <p class="image is-64x64 event-logo">
-                <img src="https://smashgg.imgix.net/images/tournament/33152/image-7edc5687f26641540b5b290773a6a16f.png?auto=compress,format&w=280&h=280&fit=crop">
+                <img v-bind:src="event.logo">
               </p>
             </figure>
             <div class="media-content">
@@ -87,52 +92,32 @@
                 <p>
                   <strong>{{event.name}}</strong>
                   <br/>
-                  <span>June 24th-26th</span> 
+                  <span>{{event.startAt | moment}}-{{event.endAt | moment}}</span> 
+                  <br/>
+                  <span>{{event.city}}, {{event.state}}</span>
                 </p>
 
               </div>
             </div>
             <div class="media-right">
-                <span class="icon has-text-info" data-balloon="Copy Event Link" data-balloon-pos="left">
+                <span class="icon has-text-info" data-balloon="Copy Event Link" data-balloon-pos="left" @click="copyEvent(event)">
                   <i class="fas fa-paste"></i>
                 </span>
-                <span class="icon has-text-danger" data-balloon="Delete Event" data-balloon-pos="left">
+                <span class="icon has-text-danger" data-balloon="Delete Event" data-balloon-pos="left" @click="deleteEvent(index)">
                   <i class="fas fa-trash-alt"></i>
                 </span>
             </div>
           </article>
-          <article class="media event">
-            <figure class="media-left">
-              <p class="image is-64x64">
-                <img src="https://smashgg.imgix.net/images/tournament/33152/image-7edc5687f26641540b5b290773a6a16f.png?auto=compress,format&w=280&h=280&fit=crop">
-              </p>
-            </figure>
-            <div class="media-content">
-              <div class="content">
-                <p>
-                  <strong>EVO 2018</strong>
-                  <br/>
-                  <span>August 24th-26th</span>
-                  <br/>
-                  <span>Las Vegas,Nevada</span> 
-                </p>
-
-              </div>
-            </div>
-            <div class="media-right">
-                <span class="icon has-text-info" data-balloon="Copy Event Link" data-balloon-pos="left">
-                  <i class="fas fa-paste"></i>
-                </span>
-                <span class="icon has-text-danger" data-balloon="Delete Event" data-balloon-pos="left">
-                  <i class="fas fa-trash-alt"></i>
-                </span>
-            </div>
-          </article>
-
+          <div class="no-events" v-show="events.length == 0">
+            <p>No events available yet! Get started by adding events.</p>
+            <br/>
+            <a class="button is-link is-outlined" @click="toggleAddModal()">Add Events</a>
+          </div>
         </div>
       </section>
     </div>
   </body>
+  <script src="js/moment.js"></script>
   <script src="js/axios.js"></script>
   <script src="js/pouchdb-6.4.3.min.js"></script>
   <script src="js/vue.js"></script>
