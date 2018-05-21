@@ -27,13 +27,14 @@ var app = new Vue({
     events:[],
     loading:false,
     tabs:{
-        allEvents: true,
+        allEvents: false,
         prevEvents: false,
-        upcomingEvents: false
+        upcomingEvents: true
     }
   },
 
   created : function() {
+
     chrome.storage.sync.get(["smashCalendar"], (result) => {
       if(result.smashCalendar){
         this.events = result.smashCalendar;
@@ -45,12 +46,20 @@ var app = new Vue({
         ggPage = tabUrl.includes('smash.gg/');
         if(ggPage){
             var opt = {
-                type: 'list',
-                title: 'Visiting Event Page',
+                type: 'basic',
+                title: 'keep burning',
                 message: 'Primary message to display',
-                priority: 1,
+                iconUrl:'../Calendar-128.png'
+
             };
-            chrome.notifications.create('notify1', opt, function(id) { console.log("Last error:", chrome.runtime.lastError); });
+            chrome.notifications.create('id', opt, function(id) {});
+            // var opt = {
+            //     type: 'list',
+            //     title: 'Visiting Event Page',
+            //     message: 'Primary message to display',
+            //     priority: 1,
+            // };
+            // chrome.notifications.create('notify1', opt, function(id) { console.log("Last error:", chrome.runtime.lastError); });
         }
     });
   },
@@ -82,6 +91,10 @@ var app = new Vue({
             self.addModal = false;
             document.getElementById('navMenu').classList.remove('is-active');
             document.querySelectorAll('.navbar-burger')[0].classList.remove('is-active');
+            iziToast.success({
+                title: 'Event Added!',    
+                maxWidth:250
+            });
 
             chrome.storage.sync.set({"smashCalendar": self.events}, function() {
               console.log('Saved');
@@ -95,12 +108,24 @@ var app = new Vue({
 
     copyEvent: function (event) {
         copyToClipboard("https://smash.gg/" + event.slug );
+        iziToast.info({
+            title: 'Event Link Copied!',    
+            maxWidth:250
+        });
+    },
+
+    linkEvent: function (event) {
+        chrome.tabs.create({url: "https://smash.gg/" + event.slug });
     },
 
     deleteEvent: function (index) {
         this.events.splice(index, 1);
         chrome.storage.sync.set({"smashCalendar": this.events}, function() {
           console.log('Saved');
+        });
+        iziToast.error({
+            title: 'Event Deleted!',    
+            maxWidth:250
         });
     },
 
@@ -121,6 +146,13 @@ var app = new Vue({
 
     github: function() {
         chrome.tabs.create({url: "https://github.com/fessehaye/Smash-Calendar-Extension"});
+    },
+
+    happening: function(e) {
+        var now = new Date();
+        var start = new Date(e.startAt);
+        var end = new Date(e.endAt);
+        return start < now && now < end;
     },
 
     filteredEvents: function () {

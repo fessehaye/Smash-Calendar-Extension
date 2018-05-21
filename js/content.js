@@ -1,7 +1,7 @@
 console.log("melee");
-var elm = document.querySelector(".navBanner")[0];
+var elm = document.querySelector(".Logo")[0];
 elem.parentNode.removeChild(elem);
-var images = document.getElementsByTagName('img');
-for (var i = 0, l = images.length; i < l; i++) {
-  images[i].src = 'http://placekitten.com/' + images[i].width + '/' + images[i].height;
+var elms = document.querySelector(".Logo");
+for (var i = 0, l = elms.length; i < l; i++) {
+  elms[i].style.display = "none";
 }

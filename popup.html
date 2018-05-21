@@ -6,7 +6,9 @@
     <title>Hello Bulma!</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/balloon-css/0.5.0/balloon.min.css">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="css/iziToast.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    
     <script defer src="js/fontawesome.js"></script>
   </head>
   <body class="has-navbar-fixed-top" >
@@ -93,17 +95,22 @@
           <article class="media event" v-for="(event, index) in filteredEvents()">
             <figure class="media-left">
               <p class="image is-64x64 event-logo">
-                <img v-bind:src="event.logo">
+                <img v-bind:src="event.logo" @click="linkEvent(event)">
               </p>
             </figure>
             <div class="media-content">
               <div class="content">
                 <p>
-                  <strong>{{event.name}}</strong>
+                  <strong @click="linkEvent(event)">
+                    {{event.name}}
+                    <span class="icon has-text-info" data-balloon="Happening Now" data-balloon-pos="down" v-if="happening(event)">
+                      <i class="fas fa-exclamation-circle"></i>
+                    </span>
+                  </strong>
                   <br/>
                   <span>{{event.startAt | moment}}-{{event.endAt | moment}}</span> 
                   <br/>
-                  <span>{{event.city}}, {{event.state}}</span>
+                  <span>{{event.city}}{{event.city ? ',' : ''}} {{event.state}}</span>
                 </p>
 
               </div>
@@ -130,6 +137,7 @@
   <script src="js/moment.js"></script>
   <script src="js/axios.js"></script>
   <script src="js/lokijs.min.js"></script>
+  <script src="js/iziToast.min.js"></script>
   <script src="js/vue.js"></script>
   <script src="js/popup.js"></script>
   <script src="js/navbar.js"></script>

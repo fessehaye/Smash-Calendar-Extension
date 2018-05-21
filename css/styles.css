@@ -54,3 +54,10 @@ a.navbar-item {
 .add-icon:hover {
     opacity: 1;
 }
+
+.iziToast-wrapper-bottomCenter, .iziToast-wrapper-center {
+    bottom: 15px;
+    left: 0;
+    right: 0;
+    text-align: center;
+}
