@@ -84,21 +84,31 @@ var app = new Vue({
                 slug: tourney.slug,
                 registrationClosesAt: tourney.registrationClosesAt
             };
-            // db.put(doc);
             
-            self.events.push(doc);
-            self.events = self.events.sort((a, b) => b.startAt > a.startAt );
-            self.addModal = false;
-            document.getElementById('navMenu').classList.remove('is-active');
-            document.querySelectorAll('.navbar-burger')[0].classList.remove('is-active');
-            iziToast.success({
-                title: 'Event Added!',    
-                maxWidth:250
+            var eventIndex = self.events.findIndex((e) => {
+                return e._id == doc._id;
             });
 
-            chrome.storage.sync.set({"smashCalendar": self.events}, function() {
-              console.log('Saved');
-            });
+            if (eventIndex == -1) {
+                self.events.push(doc);
+                self.events = self.events.sort((a, b) => b.startAt > a.startAt );
+                
+
+                chrome.storage.sync.set({"smashCalendar": self.events}, function() {
+                    console.log('Saved');
+                });
+            }
+            else {
+                self.addModal = false;
+                document.getElementById('navMenu').classList.remove('is-active');
+                document.querySelectorAll('.navbar-burger')[0].classList.remove('is-active');
+                iziToast.error({
+                    title: 'Event Already Added',    
+                    maxWidth:250
+                });
+            }
+            
+            
 
         })
         .catch(function (error) {

@@ -3,7 +3,7 @@
     "version": "1.0",
     "description": "Bookmark smash.gg events for future use",
     "background": {
-        "scripts": ["background.js"],
+        "scripts": ["js/axios.js","js/background.js"],
         "persistent": false
     },
     "browser_action": {
@@ -12,9 +12,9 @@
     },
     "content_scripts": [
         {
-            "matches": ["https://blog.lateral.io/*", "http://smash.gg/tournament/*"],
+            "matches": ["http://smash.gg/tournament/*", "https://smash.gg/tournament/*"],
             "js": ["js/content.js"],
-            "css": ["css/content.css"],
+            "css": ["css/content.css", "css/balloon.css"],
             "run_at": "document_end"
         }
     ],
@@ -26,8 +26,12 @@
         "activeTab",
         "tabs",
         "notifications",
-        "<all_urls>"
+        "https://smash.gg/tournament/*",
+        "http://smash.gg/tournament/*"
     ],
+    "web_accessible_resources": [
+        "*.png"
+      ],
     "manifest_version": 2,
     "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
 }
