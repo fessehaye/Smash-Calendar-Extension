@@ -13,9 +13,6 @@ if(ggPage){
     btn.dataset.balloon = "Bookmark Event";
     btn.dataset.balloonPos = "up";
     document.body.appendChild(btn);
-    
-    //console.log(tourneySlug[0]);
-    
 }
 
 document.getElementById("bookmark-calendar-smash").addEventListener("click", function () {

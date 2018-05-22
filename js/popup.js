@@ -23,6 +23,7 @@ var app = new Vue({
   data: {
     eventInput: 'pound-underground',
     addModal: false,
+    showMenu:false,
     edit:true,
     events:[],
     loading:false,
@@ -61,7 +62,7 @@ var app = new Vue({
                 state: tourney.addrState || "",
                 logo: logo.url,
                 slug: tourney.slug,
-                registrationClosesAt: tourney.registrationClosesAt
+                registrationClosesAt: tourney.registrationClosesAt * 1000
             };
             
             var eventIndex = self.events.findIndex((e) => {
@@ -71,10 +72,15 @@ var app = new Vue({
             if (eventIndex == -1) {
                 self.events.push(doc);
                 self.events = self.events.sort((a, b) => b.startAt > a.startAt );
-                
-
+                self.addModal = false;
+                document.getElementById('navMenu').classList.remove('is-active');
+                document.querySelectorAll('.navbar-burger')[0].classList.remove('is-active');
                 chrome.storage.sync.set({"smashCalendar": self.events}, function() {
                     console.log('Saved');
+                });
+                iziToast.success({
+                    title: 'Event Added!',    
+                    maxWidth:250
                 });
             }
             else {
@@ -122,6 +128,10 @@ var app = new Vue({
         this.addModal = !this.addModal;
     },
 
+    toggleMenu : function() {
+        this.showMenu = !this.showMenu;
+    },
+
     changeTab: function(tabName) {
         Object.keys(this.tabs).forEach((key,index) => {
             if(tabName == key) {
@@ -144,6 +154,17 @@ var app = new Vue({
         return start < now && now < end;
     },
 
+    upcoming: function(e) {
+        var regDate = new Date(e.registrationClosesAt);
+        var nowDate = new Date();
+        if(nowDate > regDate) {
+            return null;
+        }
+        var now = moment();
+        var reg = moment(regDate);
+        return e.registrationClosesAt ? now.to(reg) : null;
+    },
+
     filteredEvents: function () {
       // `this` points to the vm instance
       if(this.tabs.prevEvents) {
@@ -161,7 +182,7 @@ var app = new Vue({
         })
       }
       else {
-          return this.events;
+          return [...this.events];
       }
 
     }
