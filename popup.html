@@ -91,44 +91,49 @@
               </li>
             </ul>
           </div>
-       
-          <article class="media event" v-for="(event, index) in filteredEvents()">
-            <figure class="media-left">
-              <p class="image is-64x64 event-logo">
-                <img v-bind:src="event.logo" @click="linkEvent(event)">
-              </p>
-            </figure>
-            <div class="media-content">
-              <div class="content">
-                <p>
-                  <strong @click="linkEvent(event)">
-                    {{event.name}}
-                    <span class="icon has-text-info" data-balloon="Happening Now" data-balloon-pos="down" v-if="happening(event)">
-                      <i class="fas fa-exclamation-circle"></i>
-                    </span>
-                  </strong>
-                  <br/>
-                  <span>{{event.startAt | moment}}-{{event.endAt | moment}}</span> 
-                  <br/>
-                  <span>{{event.city}}{{event.city ? ',' : ''}} {{event.state}}</span>
-                </p>
-
-              </div>
-            </div>
-            <div class="media-right">
-                <span class="icon has-text-info" data-balloon="Copy Event Link" data-balloon-pos="left" @click="copyEvent(event)">
-                  <i class="fas fa-paste"></i>
-                </span>
-                <span class="icon has-text-danger" data-balloon="Delete Event" data-balloon-pos="left" @click="deleteEvent(index)">
-                  <i class="fas fa-trash-alt"></i>
-                </span>
-            </div>
-          </article>
-          <div class="no-events" v-show="filteredEvents().length == 0">
-            <p>No events available yet! Get started by adding events.</p>
-            <br/>
-            <a class="button is-link is-outlined" @click="toggleAddModal()">Add Events</a>
+          
+          <div class="container">
+              <transition-group name="slide-fade" tag="div">
+                  <article class="media event" v-for="(event, index) in filteredEvents()" v-bind:key="event">
+                      <figure class="media-left">
+                        <p class="image is-64x64 event-logo">
+                          <img v-bind:src="event.logo" @click="linkEvent(event)">
+                        </p>
+                      </figure>
+                      <div class="media-content">
+                        <div class="content">
+                          <p>
+                            <strong @click="linkEvent(event)">
+                              {{event.name}}
+                              <span class="icon has-text-info" data-balloon="Happening Now" data-balloon-pos="down" v-if="happening(event)">
+                                <i class="fas fa-exclamation-circle"></i>
+                              </span>
+                            </strong>
+                            <br/>
+                            <span>{{event.startAt | moment}}-{{event.endAt | moment}}</span> 
+                            <br/>
+                            <span>{{event.city}}{{event.city ? ',' : ''}} {{event.state}}</span>
+                          </p>
+          
+                        </div>
+                      </div>
+                      <div class="media-right">
+                          <span class="icon has-text-info" data-balloon="Copy Event Link" data-balloon-pos="left" @click="copyEvent(event)">
+                            <i class="fas fa-paste"></i>
+                          </span>
+                          <span class="icon has-text-danger" data-balloon="Delete Event" data-balloon-pos="left" @click="deleteEvent(index)">
+                            <i class="fas fa-trash-alt"></i>
+                          </span>
+                      </div>
+                    </article>
+                    <div class="no-events" v-show="filteredEvents().length == 0">
+                      <p>No events available yet! Get started by adding events.</p>
+                      <br/>
+                      <a class="button is-link is-outlined" @click="toggleAddModal()">Add Events</a>
+                    </div>
+              </transition-group>
           </div>
+          
           <div style="margin:2.5rem;"></div>
         </div>
       </section>

@@ -41,27 +41,6 @@ var app = new Vue({
       }
     });
 
-    chrome.tabs.getSelected(null, function(tab) {
-        tabUrl = tab.url;
-        ggPage = tabUrl.includes('smash.gg/');
-        if(ggPage){
-            var opt = {
-                type: 'basic',
-                title: 'keep burning',
-                message: 'Primary message to display',
-                iconUrl:'../Calendar-128.png'
-
-            };
-            chrome.notifications.create('id', opt, function(id) {});
-            // var opt = {
-            //     type: 'list',
-            //     title: 'Visiting Event Page',
-            //     message: 'Primary message to display',
-            //     priority: 1,
-            // };
-            // chrome.notifications.create('notify1', opt, function(id) { console.log("Last error:", chrome.runtime.lastError); });
-        }
-    });
   },
 
   methods: {
