@@ -17,26 +17,19 @@ function addBookmark () {
 
         document.getElementById("bookmark-calendar-smash").addEventListener("click", function () {
             var tourneySlug = 
-                window.location.pathname.match(/(?<=tournament\/).*(?=\/)/i) ||
-                window.location.pathname.match(/(?<=tournament\/).*/i) ||
-                window.location.pathname.match(/(?<=league\/).*(?=\/)/i) ||
-                window.location.pathname.match(/(?<=league\/).*/i);
+                window.location.pathname.match(/(?<=tournament\/).[^\/]*(?=\/)/i) ||
+                window.location.pathname.match(/(?<=tournament\/).[^\/]*/i) ||
+                window.location.pathname.match(/(?<=league\/).[^\/]*(?=\/)/i) ||
+                window.location.pathname.match(/(?<=league\/).[^\/]*/i);
             if(tourneySlug.length) {
                 chrome.runtime.sendMessage({slug: tourneySlug[0]}, function(response) {
-                    console.log('saved event');
-                }
+                        console.log('saved event');
+                    }
                 );
             } 
         });
     }
 
 }
-
-window.onpopstate  = function() { 
-    console.log("!");
-    addBookmark();
-}
-
-window.addEventListener('popstate', function(e){console.log('url changed')});
 
 addBookmark();
