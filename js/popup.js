@@ -73,8 +73,7 @@ var app = new Vue({
                 self.events.push(doc);
                 self.events = self.events.sort((a, b) => b.startAt > a.startAt );
                 self.addModal = false;
-                document.getElementById('navMenu').classList.remove('is-active');
-                document.querySelectorAll('.navbar-burger')[0].classList.remove('is-active');
+                self.showMenu = false;
                 chrome.storage.sync.set({"smashCalendar": self.events}, function() {
                     console.log('Saved');
                 });
@@ -85,8 +84,7 @@ var app = new Vue({
             }
             else {
                 self.addModal = false;
-                document.getElementById('navMenu').classList.remove('is-active');
-                document.querySelectorAll('.navbar-burger')[0].classList.remove('is-active');
+                self.showMenu = false;
                 iziToast.error({
                     title: 'Event Already Added',    
                     maxWidth:250
