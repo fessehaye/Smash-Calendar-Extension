@@ -49,9 +49,9 @@ function addEvent(slug){
                     type: 'basic',
                     title: 'Added Event',
                     message: doc.name + ' is now added',
-                    iconUrl:iconUrl
-        
+                    iconUrl:iconUrl  
                 };
+                
                 chrome.notifications.create('id', opt, function(id) {});
             }
 

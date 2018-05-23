@@ -18,10 +18,18 @@ const copyToClipboard = str => {
   }
 };
 
+const getSlug = link => {
+    return
+        link.match(/(?<=tournament\/).[^\/]*(?=\/)/i) ||
+        link.match(/(?<=tournament\/).[^\/]*/i) ||
+        link.match(/(?<=league\/).[^\/]*(?=\/)/i) ||
+        link.match(/(?<=league\/).[^\/]*/i);
+}
+
 var app = new Vue({
   el: '#app',
   data: {
-    eventInput: 'shine-2018',
+    eventInput: 'https://smash.gg/tournament/shine-2018',
     addModal: false,
     showMenu:false,
     edit:true,
@@ -47,7 +55,8 @@ var app = new Vue({
   methods: {
     addEvent:function () {
         var self = this;
-        axios.get('https://api.smash.gg/tournament/' + this.eventInput)
+        var slug = getSlug(this.eventInput);
+        axios.get('https://api.smash.gg/tournament/' + slug)
         .then(function (response) {
             var tourney = response.data.entities.tournament;
             var logo = tourney.images.filter((img) => {
@@ -96,6 +105,10 @@ var app = new Vue({
         })
         .catch(function (error) {
             console.log("Error could not add event:" + error);
+            iziToast.error({
+                title: "Error could not add event:" + error,    
+                maxWidth:250
+            });
         });
     },
 
