@@ -21,7 +21,7 @@ const copyToClipboard = str => {
 var app = new Vue({
   el: '#app',
   data: {
-    eventInput: 'pound-underground',
+    eventInput: 'shine-2018',
     addModal: false,
     showMenu:false,
     edit:true,
@@ -155,6 +155,7 @@ var app = new Vue({
     },
 
     upcoming: function(e) {
+    
         var regDate = new Date(e.registrationClosesAt);
         var nowDate = new Date();
         if(nowDate > regDate) {
@@ -182,7 +183,9 @@ var app = new Vue({
         })
       }
       else {
-          return [...this.events];
+        return this.events.filter((e) => {
+            return true;
+        })
       }
 
     }

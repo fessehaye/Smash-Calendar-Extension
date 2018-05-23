@@ -12,7 +12,12 @@
     },
     "content_scripts": [
         {
-            "matches": ["http://smash.gg/tournament/*", "https://smash.gg/tournament/*"],
+            "matches": [
+                "http://smash.gg/tournament/*",
+                "https://smash.gg/tournament/*",
+                "https://smash.gg/league/*",
+                "http://smash.gg/league/*"
+            ],
             "js": ["js/content.js"],
             "css": ["css/content.css", "css/balloon.css"],
             "run_at": "document_end"
@@ -27,7 +32,9 @@
         "tabs",
         "notifications",
         "https://smash.gg/tournament/*",
-        "http://smash.gg/tournament/*"
+        "http://smash.gg/tournament/*",
+        "https://smash.gg/league/*",
+        "http://smash.gg/league/*"
     ],
     "web_accessible_resources": [
         "*.png"

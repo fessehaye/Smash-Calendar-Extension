@@ -8,52 +8,54 @@
     <link rel="stylesheet" href="css/balloon.css">
     <link rel="stylesheet" href="css/iziToast.min.css">
     <link rel="stylesheet" href="css/styles.css">
-    
     <script defer src="js/fontawesome.js"></script>
   </head>
   <body class="has-navbar-fixed-top" >
     <div id="app">
-      <div class="modal" v-bind:class="{ 'is-active': addModal }">
-        <div class="modal-background" @click="toggleAddModal()"></div>
-        <div class="modal-card">
-          <header class="modal-card-head">
-            <p class="modal-card-title">Add Event</p>
-            <button class="delete" aria-label="close" @click="toggleAddModal()"></button>
-          </header>
-          <section class="modal-card-body">
-            <div class="field">
-              <label class="label">Smash.gg Tournament Slug</label>
-              <div class="control">
-                <input class="input is-success" type="text" placeholder="Tournament Slug" v-model="eventInput" >
+      <transition name="fade" mode="out-in">
+          <div class="modal is-active" v-if="addModal">
+              <div class="modal-background" @click="toggleAddModal()"></div>
+              <div class="modal-card">
+                <header class="modal-card-head">
+                  <p class="modal-card-title">Add Event</p>
+                  <button class="delete" aria-label="close" @click="toggleAddModal()"></button>
+                </header>
+                <section class="modal-card-body">
+                  <div class="field">
+                    <label class="label">Smash.gg Tournament Slug</label>
+                    <div class="control">
+                      <input class="input is-success" type="text" placeholder="Tournament Slug" v-model="eventInput" >
+                    </div>
+                    <p class="help">Ex: https://smash.gg/tournament/[tournament-slug]/events</p>
+                  </div>
+                </section>
+                <footer class="modal-card-foot">
+                  <button class="button is-success" @click="addEvent()">Add</button>
+                  <button class="button" @click="toggleAddModal()">Cancel</button>
+                </footer>
               </div>
-              <p class="help">Ex: https://smash.gg/tournament/[tournament-slug]/events</p>
             </div>
-          </section>
-          <footer class="modal-card-foot">
-            <button class="button is-success" @click="addEvent()">Add</button>
-            <button class="button" @click="toggleAddModal()">Cancel</button>
-          </footer>
-        </div>
-      </div>
+      </transition>
+      
       <a class="button add-icon is-link" data-balloon="Add Event" data-balloon-pos="left" @click="toggleAddModal()"> 
         <span class="icon is-large">
           <i class="fas fa-plus"></i>
         </span>
       </a>
+
       <nav class="navbar is-fixed-top has-background-danger" role="navigation" aria-label="main navigation">
           <div class="navbar-brand">
               <a class="navbar-item has-text-white has-text-weight-semibold">
                   Smash Mini Calendar
               </a>
 
-              <a role="button" class="navbar-burger has-text-white" aria-label="menu" aria-expanded="false">
+              <a @click="toggleMenu" v-bind:class="{ 'is-active': showMenu }" role="button" class="navbar-burger has-text-white" aria-label="menu" aria-expanded="false">
                 <span aria-hidden="true"></span>
                 <span aria-hidden="true"></span>
                 <span aria-hidden="true"></span>
               </a>
           </div>
-
-          <div class="navbar-menu" id="navMenu">
+          <div class="navbar-menu is-active" id="navMenu" v-if="showMenu">
             <!-- shown on mobile -->
             <!-- <a class="navbar-item" >
               Add Tab
@@ -68,6 +70,8 @@
               <span>GitHub</span>
             </a>
           </div>
+
+          
 
       </nav>
       <section>
@@ -93,8 +97,8 @@
           </div>
           
           <div class="container" v-for="(tab, indexTab) in tabs">
-              <transition name="slide-fade" v-if="tab">
-                  <div class="tab-container">
+              <transition name="slide-fade" mode="out-in">
+                  <div class="tab-container" v-if="tab">
                       <article class="media event" v-for="(event, index) in filteredEvents()">
                           <figure class="media-left">
                             <p class="image is-64x64 event-logo">

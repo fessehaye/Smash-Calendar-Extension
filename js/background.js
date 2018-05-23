@@ -31,7 +31,7 @@ function addEvent(slug){
                 state: tourney.addrState || "",
                 logo: logo.url,
                 slug: tourney.slug,
-                registrationClosesAt: tourney.registrationClosesAt
+                registrationClosesAt: tourney.registrationClosesAt * 1000
             };
             
             var eventIndex = events.findIndex((e) => {
@@ -44,6 +44,15 @@ function addEvent(slug){
                 chrome.storage.sync.set({"smashCalendar": events}, function() {
                     console.log('synced');
                 });
+                var iconUrl = chrome.extension.getURL("Calendar-128.png");
+                var opt = {
+                    type: 'basic',
+                    title: 'Added Event',
+                    message: doc.name + ' is now added',
+                    iconUrl:iconUrl
+        
+                };
+                chrome.notifications.create('id', opt, function(id) {});
             }
 
             else {
