@@ -19,12 +19,15 @@ const copyToClipboard = str => {
 };
 
 const getSlug = link => {
-    return
+    console.log(link,link.match(/(?<=tournament\/).[^\/]*(?=\/)/i),link.match(/(?<=tournament\/).[^\/]*/i));
+    var tourneySlug =
         link.match(/(?<=tournament\/).[^\/]*(?=\/)/i) ||
         link.match(/(?<=tournament\/).[^\/]*/i) ||
         link.match(/(?<=league\/).[^\/]*(?=\/)/i) ||
         link.match(/(?<=league\/).[^\/]*/i);
-}
+
+    return tourneySlug.length ? tourneySlug[0] : null;
+};
 
 var app = new Vue({
   el: '#app',
@@ -87,7 +90,7 @@ var app = new Vue({
                     console.log('Saved');
                 });
                 iziToast.success({
-                    title: 'Event Added!',    
+                    title: doc.name + ' Added!',    
                     maxWidth:250
                 });
             }
