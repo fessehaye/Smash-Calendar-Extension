@@ -23,7 +23,7 @@ function addEvent(slug){
                 return img.type == "profile"
             })[0];
             var doc = {
-                _id: tourney.shortSlug,
+                _id: tourney.id,
                 name: tourney.name,
                 startAt: tourney.startAt * 1000,
                 endAt: tourney.endAt * 1000,

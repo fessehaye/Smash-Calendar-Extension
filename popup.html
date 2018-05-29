@@ -36,6 +36,52 @@
               </div>
             </div>
       </transition>
+
+      <transition name="fade" mode="out-in">
+          <div class="modal is-active" v-if="streamEvent">
+              <div class="modal-background" @click="toggleStream()"></div>
+              <div class="modal-card">
+                <header class="modal-card-head">
+                  <p class="modal-card-title">Find Event Stream Channels</p>
+                  <button class="delete" aria-label="close" @click="toggleStream()"></button>
+                </header>
+                <section class="modal-card-body">
+                  <div v-show="streamLoading" class="loader-container">
+                      <div class="loader"></div>
+                  </div>
+                  
+                  <div class="no-stream" v-show="streamData.length == 0 && streamLoading == false">
+                    <p>No streams are listed for this event at the moment. The TO might update this info later on smash.gg.</p>
+                  </div>
+                  <div v-for="stream in streamData" class="box" @click="goToStream(stream)">
+                    
+                    <article class="media">
+                      <div class="media-left">
+                        <figure class="image is-64x64">
+                          <img v-bind:src="stream.streamLogo" alt="Image">
+                        </figure>
+                      </div>
+                      <div class="media-content">
+                        <div class="content">
+                          <p>
+                            <strong>{{stream.streamName}}</strong> <small>{{stream.updatedAt * 1000 | moment }}</small>
+                            <br>
+                            {{stream.streamStatus}}
+                            <br>
+                            Game: {{stream.streamGame}}
+                          </p>
+                        </div>
+                      </div>
+                    </article>
+
+                  </div>
+                </section>
+                <footer class="modal-card-foot">
+                  <button class="button" @click="toggleStream()">Exit</button>
+                </footer>
+              </div>
+            </div>
+      </transition>
       
       <a class="button add-icon is-link" data-balloon="Add Event" data-balloon-pos="left" @click="toggleAddModal()"> 
         <span class="icon is-large">
@@ -129,6 +175,9 @@
                               </span>
                               <span class="icon has-text-danger" data-balloon="Delete Event" data-balloon-pos="left" @click="deleteEvent(index)">
                                 <i class="fas fa-trash-alt"></i>
+                              </span>
+                              <span class="icon twitch-icon" data-balloon="Find Streams" data-balloon-pos="left" @click="toggleStream(event)">
+                                <i class="fab fa-twitch"></i>
                               </span>
                           </div>
                       </article>
