@@ -121,7 +121,12 @@
 
       </nav>
       <section>
-        <div class="container ">
+        <div class="container">
+          <div class="field">
+            <div class="control">
+              <input class="input is-rounded is-small" type="text" placeholder="Event Name" v-model="filterText">
+            </div>
+          </div>
           <div class="tabs is-centered is-small is-boxed">
             <ul>
               <li v-bind:class="{ 'is-active': tabs.upcomingEvents }">
@@ -170,15 +175,40 @@
                             </div>
                           </div>
                           <div class="media-right">
-                              <span class="icon has-text-info" data-balloon="Copy Event Link" data-balloon-pos="left" @click="copyEvent(event)">
-                                <i class="fas fa-paste"></i>
-                              </span>
-                              <span class="icon has-text-danger" data-balloon="Delete Event" data-balloon-pos="left" @click="deleteEvent(index)">
-                                <i class="fas fa-trash-alt"></i>
-                              </span>
-                              <span class="icon twitch-icon" data-balloon="Find Streams" data-balloon-pos="left" @click="toggleStream(event)">
-                                <i class="fab fa-twitch"></i>
-                              </span>
+                              <div class="list-icons">
+                                <span class="icon has-text-info" data-balloon="Copy Event Link" data-balloon-pos="left" @click="copyEvent(event)">
+                                  <i class="fas fa-paste"></i>
+                                </span>
+
+                                <div class="dropdown is-hoverable is-right">
+                                  <div class="dropdown-trigger">
+                                    <button class="button d-button" aria-haspopup="true" aria-controls="dropdown-menu4">
+                                      <span class="icon is-small">
+                                        <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
+                                      </span>
+                                    </button>
+                                  </div>
+                                  <div class="dropdown-menu" role="menu">
+                                    <div class="dropdown-content">
+                                      <div class="dropdown-item" @click="deleteEvent(index)">
+                                        <p class="list-options"><i class="fas fa-trash-alt has-text-danger"></i> Delete Event</p>
+                                      </div>
+                                      <hr class="dropdown-divider">
+                                      <div class="dropdown-item" @click="toggleStream(event)">
+                                        <p class="list-options"><i class="fab fa-twitch twitch-icon"></i> Find Streams</p>
+                                      </div>
+                                      <hr class="dropdown-divider">
+                                      <div class="dropdown-item" @click="addToCal(event)">
+                                        <p class="list-options"><i class="fab fa-google"></i> Add to Calendar</p>
+                                      </div>
+                                      <hr class="dropdown-divider" v-if="event.fb">
+                                      <div class="dropdown-item" @click="openFB(event)" v-if="event.fb">
+                                        <p class="list-options"><i class="fab fa-facebook-square fb-icon"></i> Facebook Event</p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
                           </div>
                       </article>
                       <div class="no-events" v-show="filteredEvents().length == 0">

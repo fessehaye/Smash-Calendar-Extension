@@ -31,6 +31,8 @@ function addEvent(slug){
                 state: tourney.addrState || "",
                 logo: logo.url,
                 slug: tourney.slug,
+                venue:tourney.venueAddress,
+                fb:tourney.links.facebook || "",
                 registrationClosesAt: tourney.registrationClosesAt * 1000
             };
             

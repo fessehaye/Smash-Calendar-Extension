@@ -112,6 +112,10 @@ a.navbar-item {
     color: #6441A4;
 }
 
+.fb-icon {
+    color: #3b5998;
+}
+
 .loader-container {
     width:100%;
     display: flex;
@@ -130,4 +134,17 @@ a.navbar-item {
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+.list-icons {
+    display: flex;
+    align-items: center;
+}
+
+.list-options svg {
+    margin-right: 10px;
+}
+
+.d-button {
+    border:none;
 }

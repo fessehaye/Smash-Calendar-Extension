@@ -19,7 +19,6 @@ const copyToClipboard = str => {
 };
 
 const getSlug = link => {
-    console.log(link,link.match(/(?<=tournament\/).[^\/]*(?=\/)/i),link.match(/(?<=tournament\/).[^\/]*/i));
     var tourneySlug =
         link.match(/(?<=tournament\/).[^\/]*(?=\/)/i) ||
         link.match(/(?<=tournament\/).[^\/]*/i) ||
@@ -41,6 +40,7 @@ var app = new Vue({
     streamEvent:null,
     streamData: null,
     streamLoading: false,
+    filterText: "",
     tabs:{
         allEvents: false,
         prevEvents: false,
@@ -77,6 +77,8 @@ var app = new Vue({
                 state: tourney.addrState || "",
                 logo: logo.url,
                 slug: tourney.slug,
+                venue:tourney.venueAddress,
+                fb:tourney.links.facebook || "",
                 registrationClosesAt: tourney.registrationClosesAt * 1000
             };
             
@@ -105,9 +107,6 @@ var app = new Vue({
                     maxWidth:250
                 });
             }
-            
-            
-
         })
         .catch(function (error) {
             console.log("Error could not add event:" + error);
@@ -128,6 +127,26 @@ var app = new Vue({
 
     linkEvent: function (event) {
         chrome.tabs.create({url: "https://smash.gg/" + event.slug });
+    },
+
+    openFB: function (e) {
+        if(e && e.fb) {
+            chrome.tabs.create({url: e.fb });
+        } 
+    },
+
+    addToCal: function (e) {
+        var glink = `http://www.google.com/calendar/event?` +
+        'action=TEMPLATE' +
+        `&text=${encodeURIComponent(e.name)}` +
+        `&dates=${encodeURIComponent((new Date(e.startAt)).toISOString().replace(/-|:|\.\d\d\d/g,""))}` +
+        `/${encodeURIComponent((new Date(e.endAt)).toISOString().replace(/-|:|\.\d\d\d/g,""))}` +
+        `&details=${encodeURIComponent("https://smash.gg/" + e.slug)}` +
+        `&location=${encodeURIComponent(e.venue)}` +
+        `&trp=false` +
+        `&sprop=` +
+        `&sprop=name:`;
+        chrome.tabs.create({url: glink });
     },
 
     deleteEvent: function (index) {
@@ -224,6 +243,11 @@ var app = new Vue({
             var event = new Date(e.endAt);
             return event < now;
         })
+        .filter((e) => {
+            return this.filterText ?
+                e.name.toUpperCase().includes(this.filterText.toUpperCase()) :
+                true
+        })
       }
       else if(this.tabs.upcomingEvents) {
         return this.events.filter((e) => {
@@ -231,10 +255,17 @@ var app = new Vue({
             var event = new Date(e.endAt);
             return event > now;
         })
+        .filter((e) => {
+            return this.filterText ?
+                e.name.toUpperCase().includes(this.filterText.toUpperCase()) :
+                true
+        })
       }
       else {
         return this.events.filter((e) => {
-            return true;
+            return this.filterText ?
+                e.name.toUpperCase().includes(this.filterText.toUpperCase()) :
+                true
         })
       }
 
