@@ -1,6 +1,6 @@
 {
     "name": "Smash Mini Calendar",
-    "version": "0.0.1.1",
+    "version": "0.0.1.2",
     "description": "Bookmark smash.gg events for future use.",
     "background": {
         "scripts": ["js/axios.js","js/background.js"],
