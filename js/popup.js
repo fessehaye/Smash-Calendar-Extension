@@ -18,6 +18,10 @@ const copyToClipboard = str => {
   }
 };
 
+iziToast.settings({
+    timeout: 1500,
+});
+
 const getSlug = link => {
     var tourneySlug =
         link.match(/(?<=tournament\/).[^\/]*(?=\/)/i) ||
@@ -156,7 +160,8 @@ var app = new Vue({
         });
         iziToast.error({
             title: 'Event Deleted!',    
-            maxWidth:250
+            maxWidth: 250,
+            timeout: 1500
         });
     },
 
@@ -221,6 +226,15 @@ var app = new Vue({
         var start = new Date(e.startAt);
         var end = new Date(e.endAt);
         return start < now && now < end;
+    },
+
+    sameDay: function(e) {
+        
+        var start = new Date(e.startAt);
+        var end = new Date(e.endAt);
+        return start.getFullYear() === end.getFullYear() &&
+        start.getMonth() === end.getMonth() &&
+        start.getDate() === end.getDate();
     },
 
     upcoming: function(e) {

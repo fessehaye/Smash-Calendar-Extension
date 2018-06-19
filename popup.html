@@ -166,7 +166,7 @@
                                   </span>
                                 </strong>
                                 <br/>
-                                <span>{{event.startAt | moment}}-{{event.endAt | moment}}</span> 
+                                <span>{{event.startAt | moment}}<span v-if="!sameDay(event)">-{{event.endAt | moment}}</span></span> 
                                 <br/>
                                 <span>{{event.city}}{{event.city ? ',' : ''}} {{event.state}}</span>
                                 <br/>
