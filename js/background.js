@@ -42,7 +42,7 @@ function addEvent(slug){
 
             if(eventIndex == -1) {
                 events.push(doc);
-                events = events.sort((a, b) => b.startAt > a.startAt );
+                events.sort((a, b) => b.startAt > a.startAt );
                 chrome.storage.sync.set({"smashCalendar": events}, function() {
                     console.log('synced');
                 });

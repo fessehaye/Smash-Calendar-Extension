@@ -92,7 +92,7 @@ var app = new Vue({
 
             if (eventIndex == -1) {
                 self.events.push(doc);
-                self.events = self.events.sort((a, b) => b.startAt > a.startAt );
+                self.events.sort((a, b) => b.startAt > a.startAt );
                 self.addModal = false;
                 self.showMenu = false;
                 chrome.storage.sync.set({"smashCalendar": self.events}, function() {
@@ -251,8 +251,10 @@ var app = new Vue({
 
     filteredEvents: function () {
       // `this` points to the vm instance
+      let eventList = [];
+      
       if(this.tabs.prevEvents) {
-        return this.events.filter((e) => {
+        eventList = this.events.filter((e) => {
             var now = new Date();
             var event = new Date(e.endAt);
             return event < now;
@@ -264,7 +266,7 @@ var app = new Vue({
         })
       }
       else if(this.tabs.upcomingEvents) {
-        return this.events.filter((e) => {
+        eventList = this.events.filter((e) => {
             var now = new Date();
             var event = new Date(e.endAt);
             return event > now;
@@ -276,13 +278,15 @@ var app = new Vue({
         })
       }
       else {
-        return this.events.filter((e) => {
+        eventList = this.events.filter((e) => {
             return this.filterText ?
                 e.name.toUpperCase().includes(this.filterText.toUpperCase()) :
                 true
         })
       }
 
+      eventList.sort((a, b) => b.startAt < a.startAt );
+      return eventList;
     }
   },
 
