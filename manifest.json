@@ -1,6 +1,6 @@
 {
     "name": "Smash Mini Calendar",
-    "version": "0.0.1.3",
+    "version": "0.0.1.4",
     "description": "Bookmark smash.gg events for future use.",
     "background": {
         "scripts": ["js/axios.js","js/background.js"],
@@ -16,7 +16,9 @@
                 "http://smash.gg/tournament/*",
                 "https://smash.gg/tournament/*",
                 "https://smash.gg/league/*",
-                "http://smash.gg/league/*"
+                "http://smash.gg/league/*",
+                "https://smash.gg",
+                "http://smash.gg"
             ],
             "js": ["js/content.js"],
             "css": ["css/content.css", "css/balloon.css"],
@@ -40,7 +42,9 @@
         "https://smash.gg/tournament/*",
         "http://smash.gg/tournament/*",
         "https://smash.gg/league/*",
-        "http://smash.gg/league/*"
+        "http://smash.gg/league/*",
+        "https://smash.gg",
+        "http://smash.gg"
     ],
     "web_accessible_resources": [
         "*.png"
