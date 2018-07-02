@@ -1,21 +1,21 @@
 const ggAPI = "https://api.smash.gg/tournament/";
 
 const copyToClipboard = str => {
-  const el = document.createElement('textarea');
-  el.value = str;
-  el.setAttribute('readonly', '');
-  el.style.position = 'absolute';
-  el.style.left = '-9999px';
-  document.body.appendChild(el);
-  const selected =
-    document.getSelection().rangeCount > 0 ? document.getSelection().getRangeAt(0) : false;
-  el.select();
-  document.execCommand('copy');
-  document.body.removeChild(el);
-  if (selected) {
-    document.getSelection().removeAllRanges();
-    document.getSelection().addRange(selected);
-  }
+    const el = document.createElement('textarea');
+    el.value = str;
+    el.setAttribute('readonly', '');
+    el.style.position = 'absolute';
+    el.style.left = '-9999px';
+    document.body.appendChild(el);
+    const selected =
+        document.getSelection().rangeCount > 0 ? document.getSelection().getRangeAt(0) : false;
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    if (selected) {
+        document.getSelection().removeAllRanges();
+        document.getSelection().addRange(selected);
+    }
 };
 
 
@@ -112,7 +112,7 @@ Vue.component('tourney-event', {
                                 <p class="list-options"><i class="fas fa-trash-alt has-text-danger"></i> Delete Event</p>
                             </div>
                             <hr class="dropdown-divider">
-                            <div class="dropdown-item" @click="toggleStream(event)">
+                            <div class="dropdown-item" @click="$emit('toggle-stream')">
                                 <p class="list-options"><i class="fab fa-twitch twitch-icon"></i> Find Streams</p>
                             </div>
                             <hr class="dropdown-divider">

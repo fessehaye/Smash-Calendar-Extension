@@ -143,7 +143,12 @@
                         v-bind:event="event"
                         v-bind:isupcoming="indexTab=='upcomingEvents'"
                         v-on:delete-event="deleteEvent(index)"
+                        v-on:toggle-stream="toggleStream(event)"
                       ></tourney-event>
+
+                      <div v-show="isFiltering" class="filter-loader-container">
+                          <div class="loader"></div>
+                      </div>
                       
                       <div class="no-events" v-show="filteredEvents().length == 0">
                         <p>No events available yet! Get started by adding events.</p>
@@ -160,7 +165,6 @@
     </div>
   </body>
   <script src="js/moment.js"></script>
-  <script src="js/lodash.js"></script>
   <script src="js/axios.js"></script>
   <script src="js/iziToast.min.js"></script>
   <script src="js/vue.min.js"></script>

@@ -14,11 +14,11 @@ var app = new Vue({
     showMenu:false,
     edit:true,
     events:[],
-    loading:false,
     streamEvent:null,
     streamData: null,
     streamLoading: false,
     filterText: "",
+    isFiltering: false,
     tabs:{
         allEvents: false,
         prevEvents: false,
@@ -34,14 +34,16 @@ var app = new Vue({
       }
     });
 
-    this.updateInput = debounce(function(text) {
+    this.updateInput = debounce((text) => {
         this.filterText = text;
+        this.isFiltering = false;
     }, 500);
 
   },
 
   methods: {
     debounceInput: function(e) {
+        this.isFiltering = true;
         this.updateInput(e.target.value);
     },
 
