@@ -67,6 +67,11 @@ Vue.component('stream-channel', {
 
 Vue.component('tourney-event', {
     props: ['event','isupcoming'],
+    data: function () {
+        return {
+          toggle:false
+        }
+      },
     template: `
     <article class="media event">
         <figure class="media-left">
@@ -98,7 +103,7 @@ Vue.component('tourney-event', {
                     <i class="fas fa-paste"></i>
                 </span>
 
-                <div class="dropdown is-hoverable is-right">
+                <div @click="toggle = !toggle" class="dropdown is-right" v-bind:class="{ 'is-active': toggle }">
                     <div class="dropdown-trigger">
                         <button class="button d-button" aria-haspopup="true" aria-controls="dropdown-menu4">
                             <span class="icon is-small">
