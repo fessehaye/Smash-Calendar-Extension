@@ -46,7 +46,7 @@ function addEvent(slug){
                 chrome.storage.sync.set({"smashCalendar": events}, function() {
                     console.log('synced');
                 });
-                var iconUrl = chrome.extension.getURL("Calendar-128.png");
+                var iconUrl = chrome.extension.getURL("img/Calendar-128.png");
                 var opt = {
                     type: 'basic',
                     title: 'Added Event',
@@ -58,7 +58,7 @@ function addEvent(slug){
             }
 
             else {
-                var iconUrl = chrome.extension.getURL("Calendar-128.png");
+                var iconUrl = chrome.extension.getURL("img/Calendar-128.png");
                 var opt = {
                     type: 'basic',
                     title: 'Error',

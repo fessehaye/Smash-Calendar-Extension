@@ -24,13 +24,13 @@
                   <div class="field">
                     <label class="label">Smash.gg Tournament url</label>
                     <div class="control">
-                      <input class="input is-success" type="text" placeholder="Url" v-model="eventInput">
+                      <input class="input is-info" type="text" placeholder="Url" v-model="eventInput" v-on:keyup.enter="addEvent()">
                     </div>
                     <p class="help">Ex: https://smash.gg/tournament/[tournament-slug]/events</p>
                   </div>
                 </section>
                 <footer class="modal-card-foot">
-                  <button class="button is-success" @click="addEvent()">Add</button>
+                  <button class="button is-info" @click="addEvent()">Add</button>
                   <button class="button" @click="toggleAddModal()">Cancel</button>
                 </footer>
               </div>
@@ -46,6 +46,7 @@
                   <button class="delete" aria-label="close" @click="toggleStream()"></button>
                 </header>
                 <section class="modal-card-body">
+                  
                   <div v-show="streamLoading" class="loader-container">
                       <div class="loader"></div>
                   </div>
@@ -53,28 +54,13 @@
                   <div class="no-stream" v-show="streamData.length == 0 && streamLoading == false">
                     <p>No streams are listed for this event at the moment. The TO might update this info later on smash.gg.</p>
                   </div>
-                  <div v-for="stream in streamData" class="box" @click="goToStream(stream)">
-                    
-                    <article class="media">
-                      <div class="media-left">
-                        <figure class="image is-64x64">
-                          <img v-bind:src="stream.streamLogo" alt="Image">
-                        </figure>
-                      </div>
-                      <div class="media-content">
-                        <div class="content">
-                          <p>
-                            <strong>{{stream.streamName}}</strong> <small>{{stream.updatedAt * 1000 | moment }}</small>
-                            <br>
-                            {{stream.streamStatus}}
-                            <br>
-                            Game: {{stream.streamGame}}
-                          </p>
-                        </div>
-                      </div>
-                    </article>
 
-                  </div>
+                  <stream-channel
+                    v-for="stream in streamData"
+                    v-bind:key="stream.id"
+                    v-bind:stream="stream"
+                  ></stream-channel>
+
                 </section>
                 <footer class="modal-card-foot">
                   <button class="button" @click="toggleStream()">Exit</button>
@@ -83,13 +69,13 @@
             </div>
       </transition>
       
-      <a class="button add-icon is-link" data-balloon="Add Event" data-balloon-pos="left" @click="toggleAddModal()"> 
+      <a class="button add-icon is-info" data-balloon="Add Event" data-balloon-pos="left" @click="toggleAddModal()"> 
         <span class="icon is-large">
           <i class="fas fa-plus"></i>
         </span>
       </a>
 
-      <nav class="navbar is-fixed-top has-background-danger" role="navigation" aria-label="main navigation">
+      <nav class="navbar is-fixed-top has-background-info" role="navigation" aria-label="main navigation">
           <div class="navbar-brand">
               <a class="navbar-item has-text-white has-text-weight-semibold">
                   Smash Mini Calendar
@@ -124,7 +110,7 @@
         <div class="container">
           <div class="field">
             <div class="control">
-              <input class="input is-rounded is-small" type="text" placeholder="Event Name" v-model="filterText">
+              <input class="input is-rounded is-small" type="text" placeholder="Event Name" @input="debounceInput">
             </div>
           </div>
           <div class="tabs is-centered is-small is-boxed">
@@ -150,71 +136,19 @@
           <div class="container" v-for="(tab, indexTab) in tabs">
               <transition name="slide-fade" mode="out-in">
                   <div class="tab-container" v-if="tab">
-                      <article class="media event" v-for="(event, index) in filteredEvents()">
-                          <figure class="media-left">
-                            <p class="image is-64x64 event-logo">
-                              <img v-bind:src="event.logo" @click="linkEvent(event)">
-                            </p>
-                          </figure>
-                          <div class="media-content">
-                            <div class="content">
-                              <p>
-                                <strong @click="linkEvent(event)">
-                                  {{event.name}}
-                                  <span class="icon has-text-info" data-balloon="Happening Now" data-balloon-pos="down" v-if="happening(event)">
-                                    <i class="fas fa-exclamation-circle"></i>
-                                  </span>
-                                </strong>
-                                <br/>
-                                <span>{{event.startAt | moment}}<span v-if="!sameDay(event)">-{{event.endAt | moment}}</span></span> 
-                                <br/>
-                                <span>{{event.city}}{{event.city ? ',' : ''}} {{event.state}}</span>
-                                <br/>
-                                <span v-if="upcoming(event) && indexTab=='upcomingEvents'">Registration ends {{upcoming(event)}}</span>
-                              </p>
-                            </div>
-                          </div>
-                          <div class="media-right">
-                              <div class="list-icons">
-                                <span class="icon has-text-info" data-balloon="Copy Event Link" data-balloon-pos="left" @click="copyEvent(event)">
-                                  <i class="fas fa-paste"></i>
-                                </span>
 
-                                <div class="dropdown is-hoverable is-right">
-                                  <div class="dropdown-trigger">
-                                    <button class="button d-button" aria-haspopup="true" aria-controls="dropdown-menu4">
-                                      <span class="icon is-small">
-                                        <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
-                                      </span>
-                                    </button>
-                                  </div>
-                                  <div class="dropdown-menu" role="menu">
-                                    <div class="dropdown-content">
-                                      <div class="dropdown-item" @click="deleteEvent(index)">
-                                        <p class="list-options"><i class="fas fa-trash-alt has-text-danger"></i> Delete Event</p>
-                                      </div>
-                                      <hr class="dropdown-divider">
-                                      <div class="dropdown-item" @click="toggleStream(event)">
-                                        <p class="list-options"><i class="fab fa-twitch twitch-icon"></i> Find Streams</p>
-                                      </div>
-                                      <hr class="dropdown-divider">
-                                      <div class="dropdown-item" @click="addToCal(event)">
-                                        <p class="list-options"><i class="fab fa-google"></i> Add to Calendar</p>
-                                      </div>
-                                      <hr class="dropdown-divider" v-if="event.fb">
-                                      <div class="dropdown-item" @click="openFB(event)" v-if="event.fb">
-                                        <p class="list-options"><i class="fab fa-facebook-square fb-icon"></i> Facebook Event</p>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                          </div>
-                      </article>
+                      <tourney-event
+                        v-for="(event, index) in filteredEvents()"
+                        v-bind:key="index"
+                        v-bind:event="event"
+                        v-bind:isupcoming="indexTab=='upcomingEvents'"
+                        v-on:delete-event="deleteEvent(index)"
+                      ></tourney-event>
+                      
                       <div class="no-events" v-show="filteredEvents().length == 0">
                         <p>No events available yet! Get started by adding events.</p>
                         <br/>
-                        <a class="button is-link is-outlined" @click="toggleAddModal()">Add Events</a>
+                        <a class="button is-info is-outlined" @click="toggleAddModal()">Add Events</a>
                       </div>
                   </div>    
               </transition>
@@ -226,8 +160,10 @@
     </div>
   </body>
   <script src="js/moment.js"></script>
+  <script src="js/lodash.js"></script>
   <script src="js/axios.js"></script>
   <script src="js/iziToast.min.js"></script>
   <script src="js/vue.min.js"></script>
+  <script src="js/util.js"></script>
   <script src="js/popup.js"></script>
 </html>

@@ -7,7 +7,7 @@ function addBookmark () {
         var btn = document.createElement("div");
         btn.className = "bookmark-button-smash-cal";
         btn.id = "bookmark-calendar-smash";
-        var imgsrc = chrome.extension.getURL("bookmark.png");
+        var imgsrc = chrome.extension.getURL("img/bookmark.png");
         var img = document.createElement("img");
         img.src = imgsrc;
         btn.appendChild(img);

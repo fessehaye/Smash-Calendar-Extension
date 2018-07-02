@@ -1,24 +1,20 @@
 {
     "name": "Smash Mini Calendar",
-    "version": "0.0.1.4",
+    "version": "0.0.1.5",
     "description": "Bookmark smash.gg events for future use.",
     "background": {
         "scripts": ["js/axios.js","js/background.js"],
         "persistent": false
     },
     "browser_action": {
-        "default_icon": "cal-logo.png",
+        "default_icon": "img/cal-logo.png",
         "default_popup": "popup.html"
     },
     "content_scripts": [
         {
             "matches": [
-                "http://smash.gg/tournament/*",
-                "https://smash.gg/tournament/*",
-                "https://smash.gg/league/*",
-                "http://smash.gg/league/*",
-                "https://smash.gg",
-                "http://smash.gg"
+                "https://smash.gg/*",
+                "http://smash.gg/*"
             ],
             "js": ["js/content.js"],
             "css": ["css/content.css", "css/balloon.css"],
@@ -27,8 +23,8 @@
     ],
 
     "icons": {
-        "48": "cal-logo.png",
-        "96": "cal-logo.png"
+        "48": "img/cal-logo.png",
+        "96": "img/cal-logo.png"
     },
 
     "permissions":[
@@ -39,15 +35,11 @@
         "activeTab",
         "tabs",
         "notifications",
-        "https://smash.gg/tournament/*",
-        "http://smash.gg/tournament/*",
-        "https://smash.gg/league/*",
-        "http://smash.gg/league/*",
-        "https://smash.gg",
-        "http://smash.gg"
+        "https://smash.gg/*",
+        "http://smash.gg/*"
     ],
     "web_accessible_resources": [
-        "*.png"
+        "img/*.png"
       ],
     "manifest_version": 2,
     "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"

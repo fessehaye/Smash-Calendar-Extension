@@ -1,36 +1,10 @@
-var ggAPI = "https://api.smash.gg/tournament/";
-
-const copyToClipboard = str => {
-  const el = document.createElement('textarea');
-  el.value = str;
-  el.setAttribute('readonly', '');
-  el.style.position = 'absolute';
-  el.style.left = '-9999px';
-  document.body.appendChild(el);
-  const selected =
-    document.getSelection().rangeCount > 0 ? document.getSelection().getRangeAt(0) : false;
-  el.select();
-  document.execCommand('copy');
-  document.body.removeChild(el);
-  if (selected) {
-    document.getSelection().removeAllRanges();
-    document.getSelection().addRange(selected);
-  }
-};
-
-iziToast.settings({
-    timeout: 1500,
-});
-
-const getSlug = link => {
-    var tourneySlug =
-        link.match(/(?<=tournament\/).[^\/]*(?=\/)/i) ||
-        link.match(/(?<=tournament\/).[^\/]*/i) ||
-        link.match(/(?<=league\/).[^\/]*(?=\/)/i) ||
-        link.match(/(?<=league\/).[^\/]*/i);
-
-    return tourneySlug.length ? tourneySlug[0] : null;
-};
+const debounce = (fn, ms = 0) => {
+    let timeoutId;
+    return function(...args) {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => fn.apply(this, args), ms);
+    };
+  };
 
 var app = new Vue({
   el: '#app',
@@ -60,9 +34,17 @@ var app = new Vue({
       }
     });
 
+    this.updateInput = debounce(function(text) {
+        this.filterText = text;
+    }, 500);
+
   },
 
   methods: {
+    debounceInput: function(e) {
+        this.updateInput(e.target.value);
+    },
+
     addEvent:function () {
         var self = this;
         var slug = getSlug(this.eventInput);
@@ -121,50 +103,6 @@ var app = new Vue({
         });
     },
 
-    copyEvent: function (event) {
-        copyToClipboard("https://smash.gg/" + event.slug );
-        iziToast.info({
-            title: 'Event Link Copied!',    
-            maxWidth:250
-        });
-    },
-
-    linkEvent: function (event) {
-        chrome.tabs.create({url: "https://smash.gg/" + event.slug });
-    },
-
-    openFB: function (e) {
-        if(e && e.fb) {
-            chrome.tabs.create({url: e.fb });
-        } 
-    },
-
-    addToCal: function (e) {
-        var glink = `http://www.google.com/calendar/event?` +
-        'action=TEMPLATE' +
-        `&text=${encodeURIComponent(e.name)}` +
-        `&dates=${encodeURIComponent((new Date(e.startAt)).toISOString().replace(/-|:|\.\d\d\d/g,""))}` +
-        `/${encodeURIComponent((new Date(e.endAt)).toISOString().replace(/-|:|\.\d\d\d/g,""))}` +
-        `&details=${encodeURIComponent("https://smash.gg/" + e.slug)}` +
-        `&location=${encodeURIComponent(e.venue)}` +
-        `&trp=false` +
-        `&sprop=` +
-        `&sprop=name:`;
-        chrome.tabs.create({url: glink });
-    },
-
-    deleteEvent: function (index) {
-        this.events.splice(index, 1);
-        chrome.storage.sync.set({"smashCalendar": this.events}, function() {
-          console.log('Saved');
-        });
-        iziToast.error({
-            title: 'Event Deleted!',    
-            maxWidth: 250,
-            timeout: 1500
-        });
-    },
-
     toggleAddModal : function() {
         this.addModal = !this.addModal;
     },
@@ -217,36 +155,16 @@ var app = new Vue({
         chrome.tabs.create({url: "https://github.com/fessehaye/Smash-Calendar-Extension"});
     },
 
-    goToStream: function(stream) {
-        chrome.tabs.create({url: "https://twitch.tv/" + stream.streamName});
-    },
-
-    happening: function(e) {
-        var now = new Date();
-        var start = new Date(e.startAt);
-        var end = new Date(e.endAt);
-        return start < now && now < end;
-    },
-
-    sameDay: function(e) {
-        
-        var start = new Date(e.startAt);
-        var end = new Date(e.endAt);
-        return start.getFullYear() === end.getFullYear() &&
-        start.getMonth() === end.getMonth() &&
-        start.getDate() === end.getDate();
-    },
-
-    upcoming: function(e) {
-    
-        var regDate = new Date(e.registrationClosesAt);
-        var nowDate = new Date();
-        if(nowDate > regDate) {
-            return null;
-        }
-        var now = moment();
-        var reg = moment(regDate);
-        return e.registrationClosesAt ? now.to(reg) : null;
+    deleteEvent: function (index) {
+        this.events.splice(index, 1);
+        chrome.storage.sync.set({"smashCalendar": this.events}, function() {
+          console.log('Saved');
+        });
+        iziToast.error({
+            title: 'Event Deleted!',    
+            maxWidth: 250,
+            timeout: 1500
+        });
     },
 
     filteredEvents: function () {
@@ -264,6 +182,7 @@ var app = new Vue({
                 e.name.toUpperCase().includes(this.filterText.toUpperCase()) :
                 true
         })
+        eventList.sort((a, b) => b.startAt < a.startAt );
       }
       else if(this.tabs.upcomingEvents) {
         eventList = this.events.filter((e) => {
@@ -276,6 +195,8 @@ var app = new Vue({
                 e.name.toUpperCase().includes(this.filterText.toUpperCase()) :
                 true
         })
+
+        eventList.sort((a, b) => b.startAt < a.startAt );
       }
       else {
         eventList = this.events.filter((e) => {
@@ -283,18 +204,13 @@ var app = new Vue({
                 e.name.toUpperCase().includes(this.filterText.toUpperCase()) :
                 true
         })
-      }
 
-      eventList.sort((a, b) => b.startAt < a.startAt );
+        eventList.sort((a, b) => b.startAt > a.startAt );
+      }
+      
       return eventList;
     }
-  },
-
-  filters: {
-    moment: function (date) {
-      return moment(date).format('MMMM Do');
-    }
-  },
+  }
   
 
 });
