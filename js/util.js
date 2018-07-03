@@ -62,6 +62,11 @@ Vue.component('stream-channel', {
         goToStream: function(stream) {
             chrome.tabs.create({url: "https://twitch.tv/" + stream.streamName});
         },
+    },
+    filters: {
+        moment: function (d) {
+            return moment(d).format('MMMM Do');
+        }
     }
 });
 
