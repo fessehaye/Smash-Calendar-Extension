@@ -33,7 +33,7 @@ function addEvent(slug){
                 slug: tourney.slug,
                 venue:tourney.venueAddress,
                 fb:tourney.links.facebook || "",
-                registrationClosesAt: tourney.registrationClosesAt * 1000
+                registrationClosesAt: tourney.eventRegistrationClosesAt * 1000
             };
             
             var eventIndex = events.findIndex((e) => {
