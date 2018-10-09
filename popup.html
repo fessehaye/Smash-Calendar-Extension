@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Hello Bulma!</title>
+    <title>Smash Calendar</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.min.css">
     <link rel="stylesheet" href="css/balloon.css">
     <link rel="stylesheet" href="css/iziToast.min.css">
@@ -34,9 +34,53 @@
                   <button class="button" @click="toggleAddModal()">Cancel</button>
                 </footer>
               </div>
-            </div>
+          </div>
       </transition>
-
+      <transition name="fade" mode="out-in">
+        <div class="modal is-active" v-if="exportModal">
+          <div class="modal-background" @click="toggleExport()"></div>
+          <div class="modal-card">
+            <header class="modal-card-head">
+              <p class="modal-card-title">Export</p>
+              <button class="delete" aria-label="close" @click="toggleExport()"></button>
+            </header>
+            <section class="modal-card-body">
+              <p>Copy storage file to share events to others.</p>
+              <code class="export-data">{{JSON.stringify(this.events)}}</code>
+            </section>
+            <footer class="modal-card-foot">
+              <button class="button is-info" @click="copyExport()">Copy</button>
+              <button class="button" @click="toggleExport()">Cancel</button>
+            </footer>
+          </div>
+        </div>
+      </transition>
+      <transition name="fade" mode="out-in">
+          <div class="modal is-active" v-if="importModal">
+            <div class="modal-background" @click="toggleImport()"></div>
+            <div class="modal-card">
+              <header class="modal-card-head">
+                <p class="modal-card-title">Import</p>
+                <button class="delete" aria-label="close" @click="toggleImport()"></button>
+              </header>
+              <section class="modal-card-body">
+                <p>Paste Export Data to upload event information.</p>
+                <div class="notification is-warning">
+                  <strong>Warning: Will override previous saved events.</strong>
+                </div>
+                <div class="field">
+                  <div class="control">
+                    <textarea class="textarea is-info" type="text" placeholder="Paste Here" v-model="importText"></textarea>
+                  </div>
+                </div>
+              </section>
+              <footer class="modal-card-foot">
+                <button class="button is-info" @click="bulkUpload()">Import</button>
+                <button class="button" @click="toggleImport()">Cancel</button>
+              </footer>
+            </div>
+          </div>
+        </transition>
       <transition name="fade" mode="out-in">
           <div class="modal is-active" v-if="streamEvent">
               <div class="modal-background" @click="toggleStream()"></div>
@@ -89,12 +133,12 @@
           </div>
           <div class="navbar-menu is-active" id="navMenu" v-if="showMenu">
             <!-- shown on mobile -->
-            <!-- <a class="navbar-item" >
+            <a class="navbar-item" @click="toggleImport()" >
               Import
             </a>
-            <a class="navbar-item">
+            <a class="navbar-item" @click="toggleExport()">
               Export
-            </a> -->
+            </a>
             <a class="navbar-item" @click="github">
               <span class="icon">
                 <i class="fab fa-github"></i>
@@ -102,9 +146,6 @@
               <span>GitHub</span>
             </a>
           </div>
-
-          
-
       </nav>
       <section>
         <div class="container">

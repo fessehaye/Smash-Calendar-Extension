@@ -10,7 +10,7 @@ chrome.runtime.onMessage.addListener(
 );
 
 function addEvent(slug){
-    chrome.storage.sync.get(["smashCalendar"], (result) => {
+    chrome.storage.local.get(["smashCalendar"], (result) => {
         var events = [];
         if(result.smashCalendar){
             events = result.smashCalendar;
@@ -43,7 +43,7 @@ function addEvent(slug){
             if(eventIndex == -1) {
                 events.push(doc);
                 events.sort((a, b) => b.startAt > a.startAt );
-                chrome.storage.sync.set({"smashCalendar": events}, function() {
+                chrome.storage.local.set({"smashCalendar": events}, function() {
                     console.log('synced');
                 });
                 var iconUrl = chrome.extension.getURL("img/Calendar-128.png");

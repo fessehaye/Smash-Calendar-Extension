@@ -36,7 +36,8 @@
         "tabs",
         "notifications",
         "https://smash.gg/*",
-        "http://smash.gg/*"
+        "http://smash.gg/*",
+        "unlimitedStorage"
     ],
     "web_accessible_resources": [
         "img/*.png"

@@ -168,3 +168,8 @@ a.navbar-item {
 .d-button {
     border:none;
 }
+
+.export-data {
+    overflow-wrap: break-word;
+    color:#353535;
+}

@@ -11,6 +11,9 @@ var app = new Vue({
   data: {
     eventInput: 'https://smash.gg/tournament/shine-2018',
     addModal: false,
+    exportModal: false,
+    importModal: false,
+    importText:"", 
     showMenu:false,
     edit:true,
     events:[],
@@ -28,7 +31,7 @@ var app = new Vue({
 
   created : function() {
 
-    chrome.storage.sync.get(["smashCalendar"], (result) => {
+    chrome.storage.local.get(["smashCalendar"], (result) => {
       if(result.smashCalendar){
         this.events = result.smashCalendar;
       }
@@ -79,7 +82,7 @@ var app = new Vue({
                 self.events.sort((a, b) => b.startAt > a.startAt );
                 self.addModal = false;
                 self.showMenu = false;
-                chrome.storage.sync.set({"smashCalendar": self.events}, function() {
+                chrome.storage.local.set({"smashCalendar": self.events}, function() {
                     console.log('Saved');
                 });
                 iziToast.success({
@@ -105,8 +108,46 @@ var app = new Vue({
         });
     },
 
+    copyExport: function() {
+        copyToClipboard(JSON.stringify(this.events));
+        iziToast.success({
+            title: 'Copied Export',    
+            maxWidth:250
+        });
+    },
+    
+    bulkUpload: function() {
+        let importData = JSON.parse(this.importText);
+        try {
+            this.events = importData;
+            let self = this;
+            chrome.storage.local.set({"smashCalendar": this.events}, function() {
+                console.log('Saved');
+                self.importModal = false;
+                iziToast.success({
+                    title: 'Imported Events',    
+                    maxWidth:250
+                });
+            });
+        }
+        catch(err) {
+            iziToast.error({
+                title: 'Wrong Data Format',    
+                maxWidth:250
+            });
+        }
+    },
+
     toggleAddModal : function() {
         this.addModal = !this.addModal;
+    },
+
+    toggleExport : function() {
+        this.exportModal = !this.exportModal;
+    },
+
+    toggleImport : function() {
+        this.importModal = !this.importModal;
     },
 
     toggleMenu : function() {
@@ -159,7 +200,7 @@ var app = new Vue({
 
     deleteEvent: function (index) {
         this.events.splice(index, 1);
-        chrome.storage.sync.set({"smashCalendar": this.events}, function() {
+        chrome.storage.local.set({"smashCalendar": this.events}, function() {
           console.log('Saved');
         });
         iziToast.error({
@@ -170,7 +211,6 @@ var app = new Vue({
     },
 
     filteredEvents: function () {
-      // `this` points to the vm instance
       let eventList = [];
       
       if(this.tabs.prevEvents) {
