@@ -65,17 +65,25 @@
               </header>
               <section class="modal-card-body">
                 <p>Paste Export Data to upload event information.</p>
-                <div class="notification is-warning">
-                  <strong>Warning: Will override previous saved events.</strong>
-                </div>
+                <br/>
                 <div class="field">
-                  <div class="control">
-                    <textarea class="textarea is-info" type="text" placeholder="Paste Here" v-model="importText"></textarea>
-                  </div>
+                    <div class="file is-info is-centered is-medium">
+                        <label class="file-label">
+                          <input class="file-input" type="file" name="resume" @change="processFile($event)">
+                          <span class="file-cta">
+                            <span class="file-icon">
+                              <i class="fas fa-upload"></i>
+                            </span>
+                            <span class="file-label">
+                              Choose a file…
+                            </span>
+                          </span>
+                        </label>
+                      </div>
                 </div>
+                
               </section>
               <footer class="modal-card-foot">
-                <button class="button is-info" @click="bulkUpload()">Import</button>
                 <button class="button" @click="toggleImport()">Cancel</button>
               </footer>
             </div>
@@ -139,6 +147,9 @@
             <a class="navbar-item" @click="toggleExport()">
               Export
             </a>
+            <a class="navbar-item" @click="deleteAll()">
+                Clear All
+            </a>
             <a class="navbar-item" @click="github">
               <span class="icon">
                 <i class="fab fa-github"></i>
@@ -192,6 +203,8 @@
                       </div>
                       
                       <div class="no-events" v-show="filteredEvents().length == 0">
+                        <img class="no-img" src="img/no-events.svg" alt="no-events" />
+                        <br/>
                         <p>No events available yet! Get started by adding events.</p>
                         <br/>
                         <a class="button is-info is-outlined" @click="toggleAddModal()">Add Events</a>

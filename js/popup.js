@@ -6,6 +6,12 @@ const debounce = (fn, ms = 0) => {
     };
   };
 
+const uniqueElementsBy = (arr, fn) =>
+  arr.reduce((acc, v) => {
+    if (!acc.some(x => fn(v, x))) acc.push(v);
+    return acc;
+  }, []);
+
 var app = new Vue({
   el: '#app',
   data: {
@@ -32,9 +38,15 @@ var app = new Vue({
   created : function() {
 
     chrome.storage.local.get(["smashCalendar"], (result) => {
-      if(result.smashCalendar){
-        this.events = result.smashCalendar;
+      try {
+        if(result.smashCalendar){
+            this.events = result.smashCalendar;
+        }
       }
+      catch (error) {
+        console.log(error);    
+      }
+      
     });
 
     this.updateInput = debounce((text) => {
@@ -48,6 +60,85 @@ var app = new Vue({
     debounceInput: function(e) {
         this.isFiltering = true;
         this.updateInput(e.target.value);
+    },
+
+    processFile(event) {
+        
+        var reader = new FileReader();
+        reader.onload = this.onReaderLoad;
+        reader.readAsText(event.target.files[0]);
+    },
+
+    deleteAll() {
+        var self = this;
+        iziToast.question({
+            timeout: 20000,
+            close: false,
+            overlay: true,
+            displayMode: 'once',
+            id: 'error',
+            zindex: 999,
+            title: 'Hey',
+            message: 'Are you sure about that?',
+            position: 'center',
+            buttons: [
+                ['<button><b>YES</b></button>', function (instance, toast) {
+         
+                    
+                    chrome.storage.local.set({"smashCalendar": []}, function() {
+                        console.log('Clear');
+                        self.importModal = false;
+                        iziToast.success({
+                            title: 'Removed Events',    
+                            maxWidth:250
+                        });
+                        self.events = [];
+                        instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                    });
+                    
+         
+                }, true],
+                ['<button>NO</button>', function (instance, toast) {
+         
+                    instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+         
+                }],
+            ],
+            onClosing: function(instance, toast, closedBy){
+                console.info('Closing | closedBy: ' + closedBy);
+            },
+            onClosed: function(instance, toast, closedBy){
+                console.info('Closed | closedBy: ' + closedBy);
+            }
+        });
+    },
+
+    onReaderLoad(event){
+        console.log(event.target.result);
+        
+        try {
+            var newEvents = JSON.parse(event.target.result);
+            console.log(newEvents);
+          
+            this.events = uniqueElementsBy([...this.events,...newEvents],(a, b) => a._id == b._id);
+            var self = this;
+            chrome.storage.local.set({"smashCalendar": this.events}, function() {
+                console.log('Saved');
+                self.importModal = false;
+                iziToast.success({
+                    title: 'Imported Events',    
+                    maxWidth:250
+                });
+            });
+        } 
+        catch (error) {
+            console.log("Error could not add event:" + error);
+            iziToast.error({
+                title: "Error could not add event:" + error,    
+                maxWidth:250
+            });
+        }
+        
     },
 
     addEvent:function () {
@@ -115,35 +206,21 @@ var app = new Vue({
             maxWidth:250
         });
     },
-    
-    bulkUpload: function() {
-        let importData = JSON.parse(this.importText);
-        try {
-            this.events = importData;
-            let self = this;
-            chrome.storage.local.set({"smashCalendar": this.events}, function() {
-                console.log('Saved');
-                self.importModal = false;
-                iziToast.success({
-                    title: 'Imported Events',    
-                    maxWidth:250
-                });
-            });
-        }
-        catch(err) {
-            iziToast.error({
-                title: 'Wrong Data Format',    
-                maxWidth:250
-            });
-        }
-    },
 
     toggleAddModal : function() {
         this.addModal = !this.addModal;
     },
 
     toggleExport : function() {
-        this.exportModal = !this.exportModal;
+        let dataStr = JSON.stringify(this.events);
+        let dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+        
+        let exportFileDefaultName = 'events.ggCal';
+        
+        let linkElement = document.createElement('a');
+        linkElement.setAttribute('href', dataUri);
+        linkElement.setAttribute('download', exportFileDefaultName);
+        linkElement.click();
     },
 
     toggleImport : function() {
