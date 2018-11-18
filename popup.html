@@ -64,7 +64,8 @@
                 <button class="delete" aria-label="close" @click="toggleImport()"></button>
               </header>
               <section class="modal-card-body">
-                <p>Paste Export Data to upload event information.</p>
+                <img class="add-img" src="img/add-events.svg" alt="add-events" />
+                <p class="has-text-centered">Paste Export Data to upload event information.</p>
                 <br/>
                 <div class="field">
                     <div class="file is-info is-centered is-medium">
@@ -102,7 +103,7 @@
                   <div v-show="streamLoading" class="loader-container">
                       <div class="loader"></div>
                   </div>
-                  
+                  <img class="no-stream-img" src="img/no-stream.svg" alt="no-events" />
                   <div class="no-stream" v-show="streamData.length == 0 && streamLoading == false">
                     <p>No streams are listed for this event at the moment. The TO might update this info later on smash.gg.</p>
                   </div>
