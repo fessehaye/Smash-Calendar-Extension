@@ -56,14 +56,57 @@ var app = new Vue({
 
   },
 
+  computed: {
+    filteredEvents: function () {
+        let eventList = this.events;
+        
+        if(this.tabs.prevEvents) {
+          eventList = this.events.filter((e) => {
+              var now = new Date();
+              var event = new Date(e.endAt);
+              return event < now;
+          })
+          .filter((e) => {
+              return this.filterText ?
+                  e.name.toUpperCase().includes(this.filterText.toUpperCase()) :
+                  true
+          })
+          return eventList.sort((a, b) => b.startAt < a.startAt );
+        }
+        else if(this.tabs.upcomingEvents) {
+          eventList = this.events.filter((e) => {
+              var now = new Date();
+              var event = new Date(e.endAt);
+              return event > now;
+          })
+          .filter((e) => {
+              return this.filterText ?
+                  e.name.toUpperCase().includes(this.filterText.toUpperCase()) :
+                  true
+          })
+  
+          return eventList.sort((a, b) => b.startAt < a.startAt );
+        }
+        else {
+          eventList = this.events.filter((e) => {
+              return this.filterText ?
+                  e.name.toUpperCase().includes(this.filterText.toUpperCase()) :
+                  true
+          })
+  
+           return eventList.sort((a, b) => b.startAt > a.startAt );
+        }
+        
+      }
+    },
+
   methods: {
     debounceInput: function(e) {
         this.isFiltering = true;
         this.updateInput(e.target.value);
     },
 
-    processFile(event) {
-        
+    processFile(event) { 
         var reader = new FileReader();
         reader.onload = this.onReaderLoad;
         reader.readAsText(event.target.files[0]);
@@ -88,6 +131,7 @@ var app = new Vue({
                     chrome.storage.local.set({"smashCalendar": []}, function() {
                         console.log('Clear');
                         self.importModal = false;
+                        self.showMenu = false;
                         iziToast.success({
                             title: 'Removed Events',    
                             maxWidth:250
@@ -103,28 +147,21 @@ var app = new Vue({
                     instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
          
                 }],
-            ],
-            onClosing: function(instance, toast, closedBy){
-                console.info('Closing | closedBy: ' + closedBy);
-            },
-            onClosed: function(instance, toast, closedBy){
-                console.info('Closed | closedBy: ' + closedBy);
-            }
+            ]
         });
     },
 
     onReaderLoad(event){
-        console.log(event.target.result);
         
         try {
             var newEvents = JSON.parse(event.target.result);
-            console.log(newEvents);
           
             this.events = uniqueElementsBy([...this.events,...newEvents],(a, b) => a._id == b._id);
             var self = this;
             chrome.storage.local.set({"smashCalendar": this.events}, function() {
                 console.log('Saved');
                 self.importModal = false;
+                self.showMenu = false;
                 iziToast.success({
                     title: 'Imported Events',    
                     maxWidth:250
@@ -170,7 +207,7 @@ var app = new Vue({
 
             if (eventIndex == -1) {
                 self.events.push(doc);
-                self.events.sort((a, b) => b.startAt > a.startAt );
+                
                 self.addModal = false;
                 self.showMenu = false;
                 chrome.storage.local.set({"smashCalendar": self.events}, function() {
@@ -275,61 +312,21 @@ var app = new Vue({
         chrome.tabs.create({url: "https://github.com/fessehaye/Smash-Calendar-Extension"});
     },
 
-    deleteEvent: function (index) {
-        this.events.splice(index, 1);
+    deleteEvent: function (event) {
+        this.events = this.events.filter(e => e._id !== event._id);
+        
         chrome.storage.local.set({"smashCalendar": this.events}, function() {
           console.log('Saved');
-        });
-        iziToast.error({
+          iziToast.error({
             title: 'Event Deleted!',    
             maxWidth: 250,
             timeout: 1500
+          });
         });
+        
     },
 
-    filteredEvents: function () {
-      let eventList = [];
-      
-      if(this.tabs.prevEvents) {
-        eventList = this.events.filter((e) => {
-            var now = new Date();
-            var event = new Date(e.endAt);
-            return event < now;
-        })
-        .filter((e) => {
-            return this.filterText ?
-                e.name.toUpperCase().includes(this.filterText.toUpperCase()) :
-                true
-        })
-        eventList.sort((a, b) => b.startAt < a.startAt );
-      }
-      else if(this.tabs.upcomingEvents) {
-        eventList = this.events.filter((e) => {
-            var now = new Date();
-            var event = new Date(e.endAt);
-            return event > now;
-        })
-        .filter((e) => {
-            return this.filterText ?
-                e.name.toUpperCase().includes(this.filterText.toUpperCase()) :
-                true
-        })
-
-        eventList.sort((a, b) => b.startAt < a.startAt );
-      }
-      else {
-        eventList = this.events.filter((e) => {
-            return this.filterText ?
-                e.name.toUpperCase().includes(this.filterText.toUpperCase()) :
-                true
-        })
-
-        eventList.sort((a, b) => b.startAt > a.startAt );
-      }
-      
-      return eventList;
-    }
-  }
+  } 
   
 
 });

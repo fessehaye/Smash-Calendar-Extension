@@ -190,11 +190,11 @@
                   <div class="tab-container" v-if="tab">
 
                       <tourney-event
-                        v-for="(event, index) in filteredEvents()"
+                        v-for="(event, index) in filteredEvents"
                         v-bind:key="index"
                         v-bind:event="event"
                         v-bind:isupcoming="indexTab=='upcomingEvents'"
-                        v-on:delete-event="deleteEvent(index)"
+                        v-on:delete-event="deleteEvent(event)"
                         v-on:toggle-stream="toggleStream(event)"
                       ></tourney-event>
 
@@ -202,7 +202,7 @@
                           <div class="loader"></div>
                       </div>
                       
-                      <div class="no-events" v-show="filteredEvents().length == 0">
+                      <div class="no-events" v-show="filteredEvents && filteredEvents.length == 0">
                         <img class="no-img" src="img/no-events.svg" alt="no-events" />
                         <br/>
                         <p>No events available yet! Get started by adding events.</p>
