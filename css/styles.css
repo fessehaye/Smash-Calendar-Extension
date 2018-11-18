@@ -173,3 +173,7 @@ a.navbar-item {
     overflow-wrap: break-word;
     color:#353535;
 }
+
+.no-img {
+    width:50%;
+}
